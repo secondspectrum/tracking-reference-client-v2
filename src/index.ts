@@ -1,7 +1,8 @@
 import { client as WebsocketClient } from 'websocket';
 
-const PING_CHECK_INTERVAL = 5 * 1000; // check ping/pongs every 15 seconds
+const PING_CHECK_INTERVAL = 30 * 1000;
 const CLIENT = new WebsocketClient();
+
 let intervalId: NodeJS.Timeout | null = null;
 
 CLIENT.on('connectFailed', (error) => {
@@ -51,11 +52,19 @@ CLIENT.on('connect', (conn) => {
   });
 });
 
+// Websocket Request Params
+const PROTOCOL = 'wss';
+const HOSTNAME = '';
+const LEAGUE = '';
+const FEED = '';
+const GAME_ID = '';
+const X_TOKEN = '';
+
 CLIENT.connect(
-  'ws://localhost:9000/?league=epl&feed=tracking-fast&gameId=3fda033f-7eff-459e-9dd1-b24f75b3a4dd',
+  `${PROTOCOL}://${HOSTNAME}?league=${LEAGUE}&feed=${FEED}&gameId=${GAME_ID}`,
   [],
   '',
   {
-    'x-token': ''
+    'x-token': `${X_TOKEN}`
   }
 );

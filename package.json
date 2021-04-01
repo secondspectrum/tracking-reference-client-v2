@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "test": "npm run test",
-    "build": "tsc --pretty",
+    "build": "tsc --pretty && npm run prettier",
     "lint": "eslint --ext .ts src",
     "prettier": "prettier --loglevel error --write './src/**/*.ts'"
   },
