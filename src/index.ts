@@ -56,6 +56,6 @@ CLIENT.connect(
   [],
   '',
   {
-    'x-token': '2e12a2aa017112b4fe104693d9397ed5add0a720'
+    'x-token': ''
   }
 );
