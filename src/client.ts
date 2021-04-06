@@ -2,10 +2,11 @@ import { client as WebsocketClient } from 'websocket';
 import Recorder from './record';
 
 const PING_CHECK_INTERVAL = 30 * 1000;
-export const UUID_V4_REGEX = new RegExp(/^[A-Za-z0-9]{8}-[A-Za-z0-9]{4}-4[A-Za-z0-9]{3}-[A-Za-z0-9]{4}-[A-Za-z0-9]{12}$/);
+export const UUID_V4_REGEX = new RegExp(
+  /^[A-Za-z0-9]{8}-[A-Za-z0-9]{4}-4[A-Za-z0-9]{3}-[A-Za-z0-9]{4}-[A-Za-z0-9]{12}$/
+);
 
 export interface Opts {
-  feedName: string;
   gameId: string;
   authToken: string;
   test: boolean;

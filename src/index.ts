@@ -11,7 +11,6 @@ const CLIENT = new WebsocketClient();
 // Constants
 const PROTOCOL = 'wss';
 const HOSTNAME = 'live-v2.secondspectrum.com';
-const FEED_NAMES = ['tracking-fast', 'tracking-fast-refs'];
 const POSITIONS = ['start', 'live'];
 
 async function main(opts: Opts): Promise<void> {
@@ -33,11 +32,11 @@ async function main(opts: Opts): Promise<void> {
   setup(CLIENT, recorder);
 
   if (!opts.position) {
-      if (opts.test === true) opts.position = 'start';
-      else opts.position = 'live'
+    if (opts.test === true) opts.position = 'start';
+    else opts.position = 'live';
   }
 
-  const queryString = `league=epl&feed=${opts.feedName}&gameId=${opts.gameId}&position=${opts.position}&test=${opts.test}`;
+  const queryString = `league=epl&feed=tracking-fast&gameId=${opts.gameId}&position=${opts.position}&test=${opts.test}`;
   CLIENT.connect(`${PROTOCOL}://${HOSTNAME}?${queryString}`, [], '', {
     'x-token': `${opts.authToken}`
   });
@@ -50,23 +49,17 @@ yargs
     'Start Data Ingestion',
     (yargs_) => {
       yargs_
-        .option('feedName', {
-          type: 'string',
-          choices: FEED_NAMES,
-          demandOption: true
-        })
         .option('gameId', { type: 'string', demandOption: true })
         .option('authToken', { type: 'string', demandOption: true })
         .option('folderName', { type: 'string', demandOption: true })
         .option('position', {
           type: 'string',
-          choices: POSITIONS,
-          
+          choices: POSITIONS
         })
-        .option('test', { type: 'boolean', default: false }).
-        check((argv, _) => {
-            const gameId = argv.gameId;
-            return gameId.match(UUID_V4_REGEX) ? true : false;
+        .option('test', { type: 'boolean', default: false })
+        .check((argv, _) => {
+          const gameId = argv.gameId;
+          return gameId.match(UUID_V4_REGEX) ? true : false;
         });
     },
     main

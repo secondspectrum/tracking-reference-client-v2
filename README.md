@@ -13,7 +13,6 @@ npm run build
 
 ```
 node lib/index.js record \
-  --feedName <feedname> \
   --gameId <game id> \
   --authToken <auth token> \
   --folderName <folder to write data to>
@@ -30,7 +29,6 @@ Optional Parameters:
 Example command to connect to test feeds
 ```
 node lib/index.js record \
-  --feedName <feedname> \
   --gameId <game id> \
   --authToken <auth token> \
   --test <boolean> \
@@ -41,7 +39,6 @@ NOTE: For test feeds, we AUTOMATICALLY set the position to `start` if not specif
 ## Error handling
 #### CLI Verification
 The CLI will:
-- Validate that the feedName is one of `tracking-fast` or `tracking-fast-refs`
 - Validate that the gameId is a valid UUID V4
 - Validate that postion is one of `start` and `live`
 
@@ -54,7 +51,7 @@ The Websocket can return the following error messages:
 
 ## Record Data
 - When you run the command to ingest data, you should see a message: `Websocket Connected`
-- The data is written to `folderName/client/msg_[messageNumber]_[timestamp].txt` and is JSON parseable
+- The data is written to `folderName/client/msg_[messageNumber]_[timestamp].json`
 
 ## Upcoming Updates
 We plan to add the following features to the CLI soon:
