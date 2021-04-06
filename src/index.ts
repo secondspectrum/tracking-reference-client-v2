@@ -1,70 +1,68 @@
+import { promises as fs } from 'fs';
+import { join } from 'path';
+import * as yargs from 'yargs';
 import { client as WebsocketClient } from 'websocket';
 
-const PING_CHECK_INTERVAL = 30 * 1000;
+import Recorder from './record';
+import { setup, Opts } from './client';
+
 const CLIENT = new WebsocketClient();
 
-let intervalId: NodeJS.Timeout | null = null;
-
-CLIENT.on('connectFailed', (error) => {
-  console.log(`Connect Error: ${error.toString()}`);
-});
-
-CLIENT.on('connect', (conn) => {
-  let gotPong = false;
-  let numPongsMissed = 0;
-  console.log('Websocket connected');
-
-  const sendPing = () => {
-    if (!gotPong) {
-      numPongsMissed += 1;
-    }
-
-    if (numPongsMissed === 2) {
-      conn.close();
-    }
-    gotPong = false;
-    conn.ping('ping');
-  };
-
-  intervalId = setInterval(sendPing, PING_CHECK_INTERVAL);
-
-  conn.on('error', (error) => {
-    console.log(`Received error: ${error.toString()}`);
-  });
-
-  conn.on('message', (message) => {
-    if (message.type === 'utf8') {
-      console.log(`Received:  ${message.utf8Data}`);
-    }
-  });
-
-  conn.on('close', (code, reason) => {
-    console.log(`Websocket closed with code ${code} and reason ${reason}`);
-    if (intervalId !== null) {
-      clearInterval(intervalId);
-    }
-  });
-
-  conn.on('pong', () => {
-    console.log('got pong');
-    gotPong = true;
-    numPongsMissed = 0;
-  });
-});
-
-// Websocket Request Params
+// Constants
 const PROTOCOL = 'wss';
-const HOSTNAME = '';
-const LEAGUE = '';
-const FEED = '';
-const GAME_ID = '';
-const X_TOKEN = '';
+const HOSTNAME = 'live-v2.secondspectrum.com';
+const FEED_NAMES = ['tracking-fast', 'tracking-fast-refs'];
+const POSITIONS = ['start', 'live'];
 
-CLIENT.connect(
-  `${PROTOCOL}://${HOSTNAME}?league=${LEAGUE}&feed=${FEED}&gameId=${GAME_ID}`,
-  [],
-  '',
-  {
-    'x-token': `${X_TOKEN}`
+async function main(opts: Opts): Promise<void> {
+  try {
+    await fs.access(opts.folderName);
+  } catch (_) {
+    await fs.mkdir(opts.folderName);
   }
-);
+
+  const clientFolder = join(opts.folderName, `client`);
+
+  try {
+    await fs.access(clientFolder);
+  } catch (_) {
+    await fs.mkdir(clientFolder);
+  }
+
+  const recorder = new Recorder(clientFolder);
+  setup(CLIENT, recorder);
+
+  const queryString = `league=${opts.league}&feed=${opts.feed}&gameId=${opts.gameId}&position=${opts.position}&test=${opts.test}`;
+  CLIENT.connect(`${PROTOCOL}://${HOSTNAME}?${queryString}`, [], '', {
+    'x-token': `${opts.authToken}`
+  });
+}
+
+yargs
+  .scriptName('Second Spectrum Live Data Ingestion')
+  .command(
+    'record',
+    'Start Data Ingestion',
+    (yargs_) => {
+      yargs_
+        .option('league', { type: 'string', demandOption: true })
+        .option('feed', {
+          type: 'string',
+          choices: FEED_NAMES,
+          demandOption: true
+        })
+        .option('gameId', { type: 'string', demandOption: true })
+        .option('authToken', { type: 'string', demandOption: true })
+        .option('folderName', { type: 'string', demandOption: true })
+        .option('position', {
+          type: 'string',
+          choices: POSITIONS,
+          default: 'live'
+        })
+        .option('test', { type: 'boolean', default: false });
+    },
+    main
+  )
+  .demandCommand()
+  .help()
+  .parse();
