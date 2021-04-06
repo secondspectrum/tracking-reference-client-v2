@@ -27,9 +27,9 @@ export default class Recorder {
     const now = Date.now();
     const rawFilename = join(
       this.clientFolder,
-      `msg_${messageNumberStr}_${now}`
+      `msg_${messageNumberStr}_${now}.txt`
     );
 
-    await fs.writeFile(rawFilename, JSON.stringify(message));
+    await fs.writeFile(rawFilename, message);
   }
 }

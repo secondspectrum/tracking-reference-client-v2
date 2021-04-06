@@ -1,15 +1,16 @@
 {
-  "name": "hermes-fast-reference-client",
+  "name": "2s-live-v2-reference-client",
   "version": "1.0.0",
-  "description": "A reference client for hermes-fast",
+  "description": "live reference client v2",
   "main": "lib/index.js",
   "scripts": {
+      "version": "node -v",
     "test": "npm run test",
-    "build": "tsc --pretty && npm run prettier",
+    "build": "rm -rf lib && tsc --pretty && npm run prettier",
     "lint": "eslint --ext .ts src",
     "prettier": "prettier --loglevel error --write './src/**/*.ts'"
   },
-  "author": "2S Platform",
+  "author": "Second Spectrum",
   "devDependencies": {
     "@types/node": "^14.14.37",
     "@types/websocket": "^1.0.2",

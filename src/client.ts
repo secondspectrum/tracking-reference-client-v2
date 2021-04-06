@@ -2,15 +2,15 @@ import { client as WebsocketClient } from 'websocket';
 import Recorder from './record';
 
 const PING_CHECK_INTERVAL = 30 * 1000;
+export const UUID_V4_REGEX = new RegExp(/^[A-Za-z0-9]{8}-[A-Za-z0-9]{4}-4[A-Za-z0-9]{3}-[A-Za-z0-9]{4}-[A-Za-z0-9]{12}$/);
 
 export interface Opts {
-  league: string;
-  feed: string;
+  feedName: string;
   gameId: string;
   authToken: string;
-  position: string;
   test: boolean;
   folderName: string;
+  position?: string;
 }
 
 export function setup(client: WebsocketClient, recorder: Recorder) {

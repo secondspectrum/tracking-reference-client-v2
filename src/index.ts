@@ -4,7 +4,7 @@ import * as yargs from 'yargs';
 import { client as WebsocketClient } from 'websocket';
 
 import Recorder from './record';
-import { setup, Opts } from './client';
+import { setup, Opts, UUID_V4_REGEX } from './client';
 
 const CLIENT = new WebsocketClient();
 
@@ -32,7 +32,12 @@ async function main(opts: Opts): Promise<void> {
   const recorder = new Recorder(clientFolder);
   setup(CLIENT, recorder);
 
-  const queryString = `league=${opts.league}&feed=${opts.feed}&gameId=${opts.gameId}&position=${opts.position}&test=${opts.test}`;
+  if (!opts.position) {
+      if (opts.test === true) opts.position = 'start';
+      else opts.position = 'live'
+  }
+
+  const queryString = `league=epl&feed=${opts.feedName}&gameId=${opts.gameId}&position=${opts.position}&test=${opts.test}`;
   CLIENT.connect(`${PROTOCOL}://${HOSTNAME}?${queryString}`, [], '', {
     'x-token': `${opts.authToken}`
   });
@@ -45,8 +50,7 @@ yargs
     'Start Data Ingestion',
     (yargs_) => {
       yargs_
-        .option('league', { type: 'string', demandOption: true })
-        .option('feed', {
+        .option('feedName', {
           type: 'string',
           choices: FEED_NAMES,
           demandOption: true
@@ -57,9 +61,13 @@ yargs
         .option('position', {
           type: 'string',
           choices: POSITIONS,
-          default: 'live'
+          
         })
-        .option('test', { type: 'boolean', default: false });
+        .option('test', { type: 'boolean', default: false }).
+        check((argv, _) => {
+            const gameId = argv.gameId;
+            return gameId.match(UUID_V4_REGEX) ? true : false;
+        });
     },
     main
   )
