@@ -8,6 +8,7 @@ export const UUID_V4_REGEX = new RegExp(
 
 export interface Opts {
   gameId: string;
+  gameIdType: string;
   authToken: string;
   test: boolean;
   folderName: string;

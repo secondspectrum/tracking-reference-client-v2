@@ -4,7 +4,7 @@ import * as yargs from 'yargs';
 import { client as WebsocketClient } from 'websocket';
 
 import Recorder from './record';
-import { setup, Opts, UUID_V4_REGEX } from './client';
+import { setup, Opts } from './client';
 
 const CLIENT = new WebsocketClient();
 
@@ -36,7 +36,7 @@ async function main(opts: Opts): Promise<void> {
     else opts.position = 'live';
   }
 
-  const queryString = `league=epl&feed=tracking-fast&gameId=${opts.gameId}&position=${opts.position}&test=${opts.test}`;
+  const queryString = `league=epl&feed=tracking-fast&gameId=${opts.gameId}&position=${opts.position}&test=${opts.test}&gameIdType=${opts.gameIdType}`;
   CLIENT.connect(`${PROTOCOL}://${HOSTNAME}?${queryString}`, [], '', {
     'x-token': `${opts.authToken}`
   });
@@ -52,15 +52,16 @@ yargs
         .option('gameId', { type: 'string', demandOption: true })
         .option('authToken', { type: 'string', demandOption: true })
         .option('folderName', { type: 'string', demandOption: true })
+        .option('gameIdType', {
+          type: 'string',
+          demandOption: true,
+          choices: ['opta', 'ssi']
+        })
         .option('position', {
           type: 'string',
           choices: POSITIONS
         })
-        .option('test', { type: 'boolean', default: false })
-        .check((argv, _) => {
-          const gameId = argv.gameId;
-          return gameId.match(UUID_V4_REGEX) ? true : false;
-        });
+        .option('test', { type: 'boolean', default: false });
     },
     main
   )
