@@ -5,6 +5,7 @@ const PING_CHECK_INTERVAL = 30 * 1000;
 export const UUID_V4_REGEX = new RegExp(
   /^[A-Za-z0-9]{8}-[A-Za-z0-9]{4}-4[A-Za-z0-9]{3}-[A-Za-z0-9]{4}-[A-Za-z0-9]{12}$/
 );
+export const MESSAGE_ID_REGEX = new RegExp(/^[0-9]+:[0-9]+$/);
 
 export interface Opts {
   gameId: string;
@@ -12,6 +13,7 @@ export interface Opts {
   authToken: string;
   test: boolean;
   folderName: string;
+  feedName: string;
   position?: string;
 }
 

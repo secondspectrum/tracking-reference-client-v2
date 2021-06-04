@@ -4,14 +4,19 @@ import * as yargs from 'yargs';
 import { client as WebsocketClient } from 'websocket';
 
 import Recorder from './record';
-import { setup, Opts } from './client';
+import { setup, Opts, MESSAGE_ID_REGEX } from './client';
 
 const CLIENT = new WebsocketClient();
 
 // Constants
 const PROTOCOL = 'wss';
 const HOSTNAME = 'live-v2.secondspectrum.com';
-const POSITIONS = ['start', 'live'];
+const FEEDNAMES = [
+  'tracking-fast',
+  'tracking-fast-refs',
+  'tracking-produced',
+  'insight'
+];
 
 async function main(opts: Opts): Promise<void> {
   try {
@@ -36,7 +41,7 @@ async function main(opts: Opts): Promise<void> {
     else opts.position = 'live';
   }
 
-  const queryString = `league=epl&feed=tracking-fast&gameId=${opts.gameId}&position=${opts.position}&test=${opts.test}&gameIdType=${opts.gameIdType}`;
+  const queryString = `league=epl&feed=${opts.feedName}&gameId=${opts.gameId}&position=${opts.position}&test=${opts.test}&gameIdType=${opts.gameIdType}`;
   CLIENT.connect(`${PROTOCOL}://${HOSTNAME}?${queryString}`, [], '', {
     'x-token': `${opts.authToken}`
   });
@@ -52,16 +57,29 @@ yargs
         .option('gameId', { type: 'string', demandOption: true })
         .option('authToken', { type: 'string', demandOption: true })
         .option('folderName', { type: 'string', demandOption: true })
+        .option('feedName', {
+          type: 'string',
+          demandOption: true,
+          default: 'tracking-fast',
+          choices: FEEDNAMES
+        })
         .option('gameIdType', {
           type: 'string',
           demandOption: true,
           choices: ['opta', 'ssi']
         })
         .option('position', {
-          type: 'string',
-          choices: POSITIONS
+          type: 'string'
         })
-        .option('test', { type: 'boolean', default: false });
+        .option('test', { type: 'boolean', default: false })
+        .check((argv, _) => {
+          const position = argv.position;
+          if (position) {
+            const isMatch = position.match(MESSAGE_ID_REGEX) ? true : false;
+            return position === 'start' || position === 'live' || isMatch;
+          }
+          return true;
+        });
     },
     main
   )
