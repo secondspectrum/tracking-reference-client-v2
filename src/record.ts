@@ -1,6 +1,21 @@
 import { promises as fs } from 'fs';
 import { join } from 'path';
 
+interface BaseMessage {
+  league: string;
+  gameId: string;
+  feedName: string;
+  messageId: string;
+}
+
+export interface RawMessage extends BaseMessage {
+  data: string;
+}
+
+export interface Message extends BaseMessage {
+  data: any[];
+}
+
 function padStart(s: string, length: number, char: string): string {
   let padding = '';
   const lengthToPad = Math.max(length - s.length, 0);
@@ -31,5 +46,12 @@ export default class Recorder {
     );
 
     await fs.writeFile(rawFilename, message);
+  }
+
+  async recordJSONMessage(
+    messageNumber: number,
+    message: Message
+  ): Promise<void> {
+    await this.recordMessage(messageNumber, JSON.stringify(message));
   }
 }
