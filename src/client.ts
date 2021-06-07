@@ -14,7 +14,7 @@ export interface Opts {
   test: boolean;
   folderName: string;
   feedName: string;
-  jsonl: boolean;
+  json: boolean;
   position?: string;
 }
 
@@ -40,7 +40,7 @@ function convertFromJSONL(data: string): Message {
 export function setup(
   client: WebsocketClient,
   recorder: Recorder,
-  jsonl: boolean
+  json: boolean
 ) {
   let messageNumber = 1;
   let intervalId: NodeJS.Timeout | null = null;
@@ -74,11 +74,11 @@ export function setup(
 
     conn.on('message', (message) => {
       if (message.type === 'utf8' && message.utf8Data) {
-        if (jsonl) {
-          recorder.recordMessage(messageNumber, message.utf8Data);
+        if (json) {
+          const asJSON = convertFromJSONL(message.utf8Data);
+          recorder.recordJSONMessage(messageNumber, asJSON);
         } else {
-          const asJSONL = convertFromJSONL(message.utf8Data);
-          recorder.recordJSONMessage(messageNumber, asJSONL);
+          recorder.recordMessage(messageNumber, message.utf8Data);
         }
       }
       messageNumber += 1;

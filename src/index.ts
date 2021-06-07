@@ -34,7 +34,7 @@ async function main(opts: Opts): Promise<void> {
   }
 
   const recorder = new Recorder(clientFolder);
-  setup(CLIENT, recorder, opts.jsonl);
+  setup(CLIENT, recorder, opts.json);
 
   if (!opts.position) {
     if (opts.test === true) opts.position = 'start';
@@ -72,7 +72,7 @@ yargs
           type: 'string'
         })
         .option('test', { type: 'boolean', default: false })
-        .option('jsonl', {
+        .option('json', {
           type: 'boolean',
           default: false
         })
