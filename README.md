@@ -18,6 +18,7 @@ node lib/index.js record \
   --gameId <game id> \
   --authToken <auth token> \
   --gameIdType <opta or ssi> \
+  --feedName <feedName>. Default tracking-fast \
   --folderName <folder to write data to>
 ```
 
@@ -32,6 +33,8 @@ Optional Parameters:
 - `position`:
   - `start`: Ingest data starting from the beginning of the stream. Default if test is true
   - `live` : Ingest data starting from the current tip of the stream. Default if test is false
+  - Message ID of the form `number:number`. Each feed message will have a message ID attached
+- `json`: Default `false`. If true, tracking data will output in JSON
 
 Example command to connect to test feeds
 
@@ -40,6 +43,7 @@ node lib/index.js record \
   --gameId <game id> \
   --authToken <auth token> \
   --gameIdType <opta or ssi> \
+  --feedName <feedName>. Default tracking-fast \
   --test <boolean> \
   --folderName <folder to write data to>
 ```
@@ -53,7 +57,8 @@ NOTE: For test feeds, we AUTOMATICALLY set the position to `start` if not specif
 The CLI will:
 
 - Validate that the gameIdType is either `ssi` or `opta`
-- Validate that postion is one of `start` and `live`
+- Validate that postion is one of `start` and `live` or a message ID of the form `number:number`
+- Validate that feedName is one of `tracking-fast`, `tracking-fast-refs`, `tracking-produced`, and `insight`
 
 #### Websocket Error Messages
 

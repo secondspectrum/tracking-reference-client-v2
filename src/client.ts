@@ -1,10 +1,11 @@
 import { client as WebsocketClient } from 'websocket';
-import Recorder from './record';
+import Recorder, { Message, RawMessage } from './record';
 
 const PING_CHECK_INTERVAL = 30 * 1000;
 export const UUID_V4_REGEX = new RegExp(
   /^[A-Za-z0-9]{8}-[A-Za-z0-9]{4}-4[A-Za-z0-9]{3}-[A-Za-z0-9]{4}-[A-Za-z0-9]{12}$/
 );
+export const MESSAGE_ID_REGEX = new RegExp(/^[0-9]+:[0-9]+$/);
 
 export interface Opts {
   gameId: string;
@@ -12,10 +13,35 @@ export interface Opts {
   authToken: string;
   test: boolean;
   folderName: string;
+  feedName: string;
+  json: boolean;
   position?: string;
 }
 
-export function setup(client: WebsocketClient, recorder: Recorder) {
+function convertFromJSONL(data: string): Message {
+  const rawMessage: RawMessage = JSON.parse(data);
+  const split = rawMessage.data.split('\n');
+  const parsedData: any[] = [];
+  for (const frame of split) {
+    parsedData.push(JSON.parse(frame));
+  }
+
+  let output: Message = {
+    league: rawMessage.league,
+    gameId: rawMessage.gameId,
+    feedName: rawMessage.feedName,
+    messageId: rawMessage.messageId,
+    data: parsedData
+  };
+
+  return output;
+}
+
+export function setup(
+  client: WebsocketClient,
+  recorder: Recorder,
+  json: boolean
+) {
   let messageNumber = 1;
   let intervalId: NodeJS.Timeout | null = null;
 
@@ -48,7 +74,12 @@ export function setup(client: WebsocketClient, recorder: Recorder) {
 
     conn.on('message', (message) => {
       if (message.type === 'utf8' && message.utf8Data) {
-        recorder.recordMessage(messageNumber, message.utf8Data);
+        if (json) {
+          const asJSON = convertFromJSONL(message.utf8Data);
+          recorder.recordJSONMessage(messageNumber, asJSON);
+        } else {
+          recorder.recordMessage(messageNumber, message.utf8Data);
+        }
       }
       messageNumber += 1;
     });
