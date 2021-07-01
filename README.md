@@ -2,7 +2,7 @@
 
 ## Setup
 
-This package requires Node / NPM on the system. Node version 12.x is recommended. You can verify your node version by running `npm run version`. The latest version of Node can be found here: https://nodejs.org/
+This package requires Node / NPM on the system. Node 14.14 is recommended. You can verify your node version by running `npm run version`. The latest version of Node can be found here: https://nodejs.org/
 
 ## Building the Reference Client
 

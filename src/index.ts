@@ -14,6 +14,7 @@ const HOSTNAME = 'live-v2.secondspectrum.com';
 const FEEDNAMES = [
   'tracking-fast',
   'tracking-fast-refs',
+  'tracking-refs-produced',
   'tracking-produced',
   'insight'
 ];
