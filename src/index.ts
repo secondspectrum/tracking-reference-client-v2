@@ -42,7 +42,7 @@ async function main(opts: Opts): Promise<void> {
     else opts.position = 'live';
   }
 
-  const queryString = `league=epl&feed=${opts.feedName}&gameId=${opts.gameId}&position=${opts.position}&test=${opts.test}&gameIdType=${opts.gameIdType}`;
+  const queryString = `league=${opts.league}&feed=${opts.feedName}&gameId=${opts.gameId}&position=${opts.position}&test=${opts.test}&gameIdType=${opts.gameIdType}`;
   CLIENT.connect(`${PROTOCOL}://${HOSTNAME}?${queryString}`, [], '', {
     'x-token': `${opts.authToken}`
   });
@@ -55,6 +55,7 @@ yargs
     'Start Data Ingestion',
     (yargs_) => {
       yargs_
+        .option('league', { type: 'string', demandOption: true })
         .option('gameId', { type: 'string', demandOption: true })
         .option('authToken', { type: 'string', demandOption: true })
         .option('folderName', { type: 'string', demandOption: true })

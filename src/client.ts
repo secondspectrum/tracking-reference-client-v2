@@ -8,6 +8,7 @@ export const UUID_V4_REGEX = new RegExp(
 export const MESSAGE_ID_REGEX = new RegExp(/^[0-9]+:[0-9]+$/);
 
 export interface Opts {
+  league: string;
   gameId: string;
   gameIdType: string;
   authToken: string;
