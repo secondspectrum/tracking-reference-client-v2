@@ -15,6 +15,7 @@ npm run build
 
 ```
 node lib/index.js record \
+  --league <league> \
   --gameId <game id> \
   --authToken <auth token> \
   --gameIdType <opta or ssi> \
@@ -40,6 +41,7 @@ Example command to connect to test feeds
 
 ```
 node lib/index.js record \
+  --league <league> \
   --gameId <game id> \
   --authToken <auth token> \
   --gameIdType <opta or ssi> \
