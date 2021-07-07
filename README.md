@@ -60,7 +60,7 @@ The CLI will:
 
 - Validate that the gameIdType is either `ssi` or `opta`
 - Validate that postion is one of `start` and `live` or a message ID of the form `number:number`
-- Validate that feedName is one of `tracking-fast`, `tracking-fast-refs`, `tracking-produced`, and `insight`
+- Validate that feedName is one of `tracking-fast`, `tracking-fast-refs`, `tracking-produced`, `tracking-refs-produced`, and `insight`
 
 #### Websocket Error Messages
 
