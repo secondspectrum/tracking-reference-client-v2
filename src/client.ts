@@ -1,5 +1,5 @@
 import { client as WebsocketClient } from 'websocket';
-import Recorder, { Message, RawMessage } from './record';
+import Recorder from './record';
 
 const PING_CHECK_INTERVAL = 30 * 1000;
 export const UUID_V4_REGEX = new RegExp(
@@ -15,34 +15,10 @@ export interface Opts {
   test: boolean;
   folderName: string;
   feedName: string;
-  json: boolean;
   position?: string;
 }
 
-function convertFromJSONL(data: string): Message {
-  const rawMessage: RawMessage = JSON.parse(data);
-  const split = rawMessage.data.split('\n');
-  const parsedData: any[] = [];
-  for (const frame of split) {
-    parsedData.push(JSON.parse(frame));
-  }
-
-  let output: Message = {
-    league: rawMessage.league,
-    gameId: rawMessage.gameId,
-    feedName: rawMessage.feedName,
-    messageId: rawMessage.messageId,
-    data: parsedData
-  };
-
-  return output;
-}
-
-export function setup(
-  client: WebsocketClient,
-  recorder: Recorder,
-  json: boolean
-) {
+export function setup(client: WebsocketClient, recorder: Recorder) {
   let messageNumber = 1;
   let intervalId: NodeJS.Timeout | null = null;
 
@@ -75,12 +51,7 @@ export function setup(
 
     conn.on('message', (message) => {
       if (message.type === 'utf8' && message.utf8Data) {
-        if (json) {
-          const asJSON = convertFromJSONL(message.utf8Data);
-          recorder.recordJSONMessage(messageNumber, asJSON);
-        } else {
-          recorder.recordMessage(messageNumber, message.utf8Data);
-        }
+        recorder.recordMessage(messageNumber, message.utf8Data);
       }
       messageNumber += 1;
     });
