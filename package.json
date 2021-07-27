@@ -4,7 +4,7 @@
   "description": "live reference client v2",
   "main": "lib/index.js",
   "scripts": {
-      "version": "node -v",
+    "version": "node -v",
     "test": "npm run test",
     "build": "rm -rf lib && tsc --pretty && npm run prettier",
     "lint": "eslint --ext .ts src",

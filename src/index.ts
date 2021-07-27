@@ -35,7 +35,7 @@ async function main(opts: Opts): Promise<void> {
   }
 
   const recorder = new Recorder(clientFolder);
-  setup(CLIENT, recorder, opts.json);
+  setup(CLIENT, recorder);
 
   if (!opts.position) {
     if (opts.test === true) opts.position = 'start';
