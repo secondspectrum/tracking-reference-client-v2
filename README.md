@@ -35,7 +35,6 @@ Optional Parameters:
   - `start`: Ingest data starting from the beginning of the stream. Default if test is true
   - `live` : Ingest data starting from the current tip of the stream. Default if test is false
   - Message ID of the form `number:number`. The two numbers are `streamInstanceId` and `streamSequenceNumber`. Each feed message will have a message ID attached
-- `json`: Default `false`. If true, tracking data will output in JSON
 
 Example command to connect to test feeds
 
