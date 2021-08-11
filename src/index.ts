@@ -6,7 +6,9 @@ import { client as WebsocketClient } from 'websocket';
 import Recorder from './record';
 import { setup, Opts, MESSAGE_ID_REGEX } from './client';
 
-const CLIENT = new WebsocketClient();
+const CLIENT = new WebsocketClient({
+  maxReceivedFrameSize: 67108864
+});
 
 // Constants
 const PROTOCOL = 'wss';
@@ -16,7 +18,8 @@ const FEEDNAMES = [
   'tracking-fast-refs',
   'tracking-refs-produced',
   'tracking-produced',
-  'insight'
+  'insight',
+  'tracking-pose'
 ];
 
 async function main(opts: Opts): Promise<void> {
