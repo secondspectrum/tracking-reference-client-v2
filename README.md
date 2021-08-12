@@ -65,7 +65,6 @@ The CLI will:
   - `tracking-produced`
   - `tracking-refs-produced`
   - `insight`
-  - `tracking-pose`
 
 #### Websocket Error Messages
 
