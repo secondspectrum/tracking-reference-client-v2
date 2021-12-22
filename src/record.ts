@@ -1,3 +1,4 @@
+import * as async from 'async';
 import { promises as fs } from 'graceful-fs';
 import { join } from 'path';
 
@@ -26,8 +27,24 @@ function padStart(s: string, length: number, char: string): string {
   return padding + s;
 }
 
+interface MessageDetails {
+  message: string;
+  messageNumber: number;
+}
+
 export default class Recorder {
-  constructor(private clientFolder: string) {}
+  private queue: async.QueueObject<MessageDetails>;
+
+  constructor(private clientFolder: string) {
+    this.queue = async.queue((details: MessageDetails, callback) => {
+      const { messageNumber, message } = details;
+      this.recordMessage(messageNumber, message)
+        .then(() => {
+          callback();
+        })
+        .catch((e) => console.error(e));
+    });
+  }
 
   async log(message: string): Promise<void> {
     const logMessage = `[${new Date().toISOString()}]\t${message}`;
@@ -45,7 +62,20 @@ export default class Recorder {
       `msg_${messageNumberStr}_${now}.json`
     );
 
-    await fs.writeFile(rawFilename, message);
+    try {
+      await fs.writeFile(rawFilename, message);
+    } catch (e) {
+      if (e.code === 'EMFILE') {
+        this.queue.push({ message, messageNumber }, (err, _) => {
+          console.log(
+            'WARNING: File writes are getting throttled by your OS. Writes are being queued to be written later. This will affect latency of the data.'
+          );
+          if (err) {
+            console.error(`Unable to push to queue. Error ${err} `);
+          }
+        });
+      }
+    }
   }
 
   async recordJSONMessage(
