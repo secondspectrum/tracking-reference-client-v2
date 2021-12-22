@@ -75,6 +75,11 @@ The Websocket can return the following error messages:
 - `Reason: Inactive Feed`: The game feed has not started yet
   - Feeds start 1 hour prior to game start and stop 7 hours after game start
 
+#### Throttled Writes
+
+- If you see the log message about file writes getting throttled, the reason is most likely the following: https://wilsonmar.github.io/maximum-limits/
+- We handle that by queueing writes that failed on an async queue to be written later
+
 ## Record Data
 
 - When you run the command to ingest data, you should see a message: `Websocket Connected`
