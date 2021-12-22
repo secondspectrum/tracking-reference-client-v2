@@ -74,6 +74,8 @@ export default class Recorder {
             console.error(`Unable to push to queue. Error ${err} `);
           }
         });
+      } else {
+        console.error(`Unable to write file. Error ${e}`);
       }
     }
   }
