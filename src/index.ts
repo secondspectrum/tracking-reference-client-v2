@@ -1,4 +1,4 @@
-import { promises as fs } from 'fs';
+import { promises as fs } from 'graceful-fs';
 import { join } from 'path';
 import * as yargs from 'yargs';
 import { client as WebsocketClient } from 'websocket';
