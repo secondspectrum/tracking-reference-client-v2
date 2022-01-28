@@ -12,6 +12,7 @@
 ## Getting data
 
 - Enter the API endpoint you are trying to hit as the value for `API_URL` in `src/rest_api_reference_client.sh`
+  - Please refer to the documentation to determine what the API URL should be
 - The command to run is `sh src/rest_api_reference_client.sh outputFilename` where outputFilename is a name of your choosing
   - NOTE that it is important to run the command from the root of this folder
 - Once the command completes, you should see data located at `outputFilename`

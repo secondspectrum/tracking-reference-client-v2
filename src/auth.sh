@@ -7,7 +7,7 @@ cache_dir="$HOME/.ssi/cache"
 auth_domain="secondspectrum.auth0.com"
 
 if [ ! -d "$cache_dir" ]; then
-    mkdir "$cache_dir"
+    mkdir -p "$cache_dir"
 fi
 
 NOW=$(date +"%s")
