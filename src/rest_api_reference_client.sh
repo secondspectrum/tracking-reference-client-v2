@@ -9,7 +9,7 @@ fi
 
 token=$(sh ./src/auth.sh)
 
-response=$(curl $API_URL \
+response=$(curl -L $API_URL \
   -H 'accept-language: en-US,en;q=0.9' \
   -H 'authorization: Bearer '$token)
 
