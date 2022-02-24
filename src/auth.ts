@@ -1,6 +1,7 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import * as fs from 'fs';
 import { tmpdir } from 'os';
+import * as path from 'path';
 
 const CLIENT_ID = 'YOUR CLIENT ID';
 const CLIENT_SECRET = 'YOUR CLIENT SECRET';
@@ -10,7 +11,8 @@ const HOME_DIR =
   process.env.HOMEPATH ||
   process.env.USERPROFILE ||
   tmpdir();
-const TOKEN_CACHE_DIR = process.env.SSI_TOKEN_CACHE || `${HOME_DIR}/.ssi/cache`;
+const TOKEN_CACHE_DIR =
+  process.env.SSI_TOKEN_CACHE || path.join(HOME_DIR, '.ssi', 'cache');
 const AUTH_DOMAIN = 'secondspectrum.auth0.com';
 
 interface FetchTokenInput {
@@ -31,11 +33,15 @@ export async function get(audienceName: string): Promise<string> {
   const { clientId, clientSecret, authDomain } = {
     clientId: CLIENT_ID,
     clientSecret: CLIENT_SECRET,
-    authDomain: AUTH_DOMAIN
+    authDomain: AUTH_DOMAIN,
   };
   const key = getCacheKey(clientId, audienceName, authDomain);
 
-  const tokenFile = `${TOKEN_CACHE_DIR}/${key}.json`;
+  const tokenFile = path.format({
+    dir: TOKEN_CACHE_DIR,
+    name: key,
+    ext: '.json',
+  });
   const fsToken = getFSToken(tokenFile);
   if (fsToken?.token && Date.now() / 1000.0 <= fsToken?.expires) {
     return fsToken.token;
@@ -46,7 +52,7 @@ export async function get(audienceName: string): Promise<string> {
       clientId,
       clientSecret,
       audienceName,
-      authDomain
+      authDomain,
     });
 
     const f = fs.openSync(tokenFile, 'w');
@@ -93,8 +99,8 @@ async function fetchTokenClientCreds(
       grant_type: 'client_credentials',
       client_id: clientID,
       client_secret: clientSecret,
-      audience: audienceName
-    }
+      audience: audienceName,
+    },
   };
 
   const { data } = await axios.request<TokenData>(options);
@@ -102,6 +108,6 @@ async function fetchTokenClientCreds(
 
   return {
     token: data.access_token,
-    expires: Date.now() / 1000.0 + data.expires_in
+    expires: Date.now() / 1000.0 + data.expires_in,
   };
 }

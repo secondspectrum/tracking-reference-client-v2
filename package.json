@@ -14,6 +14,7 @@
   "license": "UNLICENSCED",
   "dependencies": {
     "axios": "~0.21.1",
+    "path": "~0.12.7",
     "websocket": "^1.0.34",
     "yargs": "^16.2.0"
   },
