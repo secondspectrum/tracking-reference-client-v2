@@ -1,6 +1,7 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import * as fs from 'fs';
 import * as path from 'path';
+import * as http from 'http';
 
 const CLIENT_ID = 'YOUR CLIENT ID';
 const CLIENT_SECRET = 'YOUR CLIENT SECRET';
@@ -95,6 +96,7 @@ async function fetchTokenClientCreds(
       client_secret: clientSecret,
       audience: audienceName,
     },
+    httpAgent: new http.Agent({ keepAlive: true }),
   };
 
   const { data } = await axios.request<TokenData>(options);
