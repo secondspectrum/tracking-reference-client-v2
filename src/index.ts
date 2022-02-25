@@ -8,7 +8,7 @@ import { setup, Opts, MESSAGE_ID_REGEX } from './client';
 import { get } from './auth';
 
 const CLIENT = new WebsocketClient({
-  maxReceivedFrameSize: 67108864
+  maxReceivedFrameSize: 67108864,
 });
 
 // Constants
@@ -20,7 +20,7 @@ const FEEDNAMES = [
   'tracking-refs-produced',
   'tracking-produced',
   'insight',
-  'tracking-pose'
+  'tracking-pose',
 ];
 
 async function main(opts: Opts): Promise<void> {
@@ -49,7 +49,7 @@ async function main(opts: Opts): Promise<void> {
 
   const queryString = `league=${opts.league}&feed=${opts.feedName}&gameId=${opts.gameId}&position=${opts.position}&test=${opts.test}&demo=${opts.demo}&gameIdType=${opts.gameIdType}`;
   CLIENT.connect(`${PROTOCOL}://${HOSTNAME}?${queryString}`, [], '', {
-    Authorization: `Bearer ${token}`
+    Authorization: `Bearer ${token}`,
   });
 }
 
@@ -67,21 +67,21 @@ yargs
           type: 'string',
           demandOption: true,
           default: 'tracking-fast',
-          choices: FEEDNAMES
+          choices: FEEDNAMES,
         })
         .option('gameIdType', {
           type: 'string',
           demandOption: true,
-          choices: ['opta', 'ssi']
+          choices: ['opta', 'ssi'],
         })
         .option('position', {
-          type: 'string'
+          type: 'string',
         })
         .option('test', { type: 'boolean', default: false })
         .option('demo', { type: 'boolean', default: false })
         .option('json', {
           type: 'boolean',
-          default: false
+          default: false,
         })
         .check((argv, _) => {
           const position = argv.position;

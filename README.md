@@ -1,15 +1,35 @@
 # Second Spectrum REST API Client
+The API can be hit using Node.js or bash. If you aren't sure, opt to use Node.
+## Node.js
+### Setup
 
-## Setup
+This package requires Node / NPM on the system. Node 14.14 is recommended. You can verify your node version by running `npm run version`. The latest version of Node can be found here: https://nodejs.org/
 
+### Add your credentials (Client ID and Client Secret)
+
+- Navigate to `src/auth.ts` and add your credentials there
+- If you change the credentials, make sure to rebuild the client as below
+
+### Building the Reference Client
+
+*WINDOWS USERS: Before running the steps below, please copy the contents of `package-windows.sample.json` into `package.json` and make sure Visual Studio Build Tools are installed*
+```
+npm ci
+npm run build
+```
+### Getting data
+- `node lib/rest.js [output_file_name] [API_endpoint_url]`
+- Run the above command, replacing the filename (and brackets) and the API endpoint url with a url from the documentation
+## Bash (Windows incompatible)
+### Setup
 - Download `jq`. Please navigate to https://stedolan.github.io/jq/download/ to install `jq`
 - NOTE for Mac OS X users: if you don't have it already, please install Homebrew (https://brew.sh/)
 
-## Add your credentials (Client ID and Client Secret)
+### Add your credentials (Client ID and Client Secret)
 
 - Navigate to `src/auth.sh` and add your CLIENT_ID and CLIENT_SECRET
 
-## Getting data
+### Getting data
 
 - Enter the API endpoint you are trying to hit as the value for `API_URL` in `src/rest_api_reference_client.sh`
   - Please refer to the documentation to determine what the API URL should be
@@ -29,11 +49,7 @@ This package requires Node / NPM on the system. Node 14.14 is recommended. You c
 
 ## Building the Reference Client
 
-### FOR WINDOWS USERS ONLY
-
-- Before running the steps below, please copy the contents of `package-windows.sample.json` into `package.json`
-- Make sure Visual Studio Build Tools are installed
-
+*WINDOWS USERS: Before running the steps below, please copy the contents of `package-windows.sample.json` into `package.json` and make sure Visual Studio Build Tools are installed*
 ```
 npm ci
 npm run build

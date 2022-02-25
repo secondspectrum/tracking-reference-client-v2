@@ -1,18 +1,11 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import * as fs from 'fs';
-import { tmpdir } from 'os';
 import * as path from 'path';
+import * as http from 'http';
 
 const CLIENT_ID = 'YOUR CLIENT ID';
 const CLIENT_SECRET = 'YOUR CLIENT SECRET';
 
-const HOME_DIR =
-  process.env.HOME ||
-  process.env.HOMEPATH ||
-  process.env.USERPROFILE ||
-  tmpdir();
-const TOKEN_CACHE_DIR =
-  process.env.SSI_TOKEN_CACHE || path.join(HOME_DIR, '.ssi', 'cache');
 const AUTH_DOMAIN = 'secondspectrum.auth0.com';
 
 interface FetchTokenInput {
@@ -27,8 +20,6 @@ interface TokenRequest {
   expires: number;
 }
 
-fs.mkdirSync(TOKEN_CACHE_DIR, { recursive: true });
-
 export async function get(audienceName: string): Promise<string> {
   const { clientId, clientSecret, authDomain } = {
     clientId: CLIENT_ID,
@@ -38,7 +29,7 @@ export async function get(audienceName: string): Promise<string> {
   const key = getCacheKey(clientId, audienceName, authDomain);
 
   const tokenFile = path.format({
-    dir: TOKEN_CACHE_DIR,
+    dir: path.resolve('.'),
     name: key,
     ext: '.json',
   });
@@ -55,9 +46,13 @@ export async function get(audienceName: string): Promise<string> {
       authDomain,
     });
 
-    const f = fs.openSync(tokenFile, 'w');
-    fs.writeSync(f, JSON.stringify(newToken));
-    fs.closeSync(f);
+    try {
+      const f = fs.openSync(tokenFile, 'w');
+      fs.writeSync(f, JSON.stringify(newToken));
+      fs.closeSync(f);
+    } catch (err: unknown) {
+      console.error('Failed to cache your token file. Please alert support.');
+    }
     return newToken.token;
   } catch (e) {
     throw new Error(
@@ -79,7 +74,7 @@ function getCacheKey(
   audienceName: string,
   authDomain: string
 ): string {
-  return `${authDomain}:${id}:${audienceName}`;
+  return `${authDomain}_${id}_${audienceName}`;
 }
 
 interface TokenData {
@@ -101,6 +96,7 @@ async function fetchTokenClientCreds(
       client_secret: clientSecret,
       audience: audienceName,
     },
+    httpAgent: new http.Agent({ keepAlive: true }),
   };
 
   const { data } = await axios.request<TokenData>(options);
