@@ -23,7 +23,7 @@ async function request(): Promise<void> {
   });
 
   const file = fs.openSync(outputFile, 'w');
-  await fs.writeSync(file, response.data);
+  await fs.writeSync(file, JSON.stringify(response.data));
 }
 
 request().catch((err) => console.error(err));
