@@ -13,7 +13,8 @@ TOKEN_CACHE_DIR = os.getenv('SSI_TOKEN_CACHE') or f"{HOME_DIR}/.ssi/cache"
 AUTH_DOMAIN = "secondspectrum.auth0.com"
 HEADERS = {'content-type': "application/x-www-form-urlencoded"}
 
-
+# For API, audience is hermes-api-external.prod
+# For Websocket, audience is hermes-fast-live.prod
 def get(audience):
     cacheKey = getCacheKey(CLIENT_ID, audience)
 
