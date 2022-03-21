@@ -72,7 +72,7 @@ yargs
         .option('gameIdType', {
           type: 'string',
           demandOption: true,
-          choices: ['opta', 'ssi'],
+          choices: ['opta', 'ssi', 'ngss'],
         })
         .option('position', {
           type: 'string',
