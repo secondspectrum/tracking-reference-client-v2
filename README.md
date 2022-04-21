@@ -95,20 +95,6 @@ node lib/index.js record \
 NOTE: For test feeds, we AUTOMATICALLY set the position to `start` if not specified
 
 ## Error handling
-
-#### CLI Verification
-
-The CLI will:
-
-- Validate that the gameIdType is either `ssi` or `opta`
-- Validate that postion is one of `start` and `live` or a message ID of the form `number:number`
-- Validate that feedName is one of:
-  - `tracking-fast`
-  - `tracking-fast-refs`
-  - `tracking-produced`
-  - `tracking-refs-produced`
-  - `insight`
-
 #### Websocket Error Messages
 
 The Websocket can return the following error messages:

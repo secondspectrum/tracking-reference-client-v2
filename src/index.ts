@@ -21,6 +21,7 @@ const FEEDNAMES = [
   'tracking-produced',
   'insight',
   'tracking-pose',
+  'events',
 ];
 
 async function main(opts: Opts): Promise<void> {
