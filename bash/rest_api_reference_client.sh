@@ -7,7 +7,7 @@ if [ $# -eq 0 ]
     exit 1
 fi
 
-token=$(sh ./src/auth.sh)
+token=$(sh ./bash/auth.sh)
 
 response=$(curl -L $API_URL \
   -H 'accept-language: en-US,en;q=0.9' \
