@@ -3,7 +3,7 @@ CLIENT_ID="ENTER CLIENT ID HERE"
 CLIENT_SECRET="ENTER CLIENT SECRET HERE"
 
 audience="hermes-api-external.prod"
-cache_dir="$HOME/.ssi/cache"
+cache_dir="."
 auth_domain="secondspectrum.auth0.com"
 
 if [ ! -d "$cache_dir" ]; then
@@ -11,7 +11,7 @@ if [ ! -d "$cache_dir" ]; then
 fi
 
 NOW=$(date +"%s")
-cache_file="$cache_dir/$auth_domain:$CLIENT_ID:$audience.json"
+cache_file="$cache_dir/$auth_domain_$CLIENT_ID_$audience.json"
 
 if [[ -f "$cache_file" ]]; then
     expires_at=$(cat "$cache_file" | jq '.expires')

@@ -8,7 +8,7 @@ CLIENT_SECRET = "YOUR_CLIENT_SECRET"
 
 HOME_DIR = os.getenv("HOME") or os.getenv(
     "HOMEPATH") or os.getenv("USERPROFILE")
-TOKEN_CACHE_DIR = os.getenv('SSI_TOKEN_CACHE') or f"{HOME_DIR}/.ssi/cache"
+TOKEN_CACHE_DIR = os.getenv('SSI_TOKEN_CACHE') or f"."
 
 AUTH_DOMAIN = "secondspectrum.auth0.com"
 HEADERS = {'content-type': "application/x-www-form-urlencoded"}
@@ -34,7 +34,7 @@ def get(audience):
 
 
 def getCacheKey(id, audienceName):
-    return f"{AUTH_DOMAIN}:{id}:{audienceName}"
+    return f"{AUTH_DOMAIN}_{id}_{audienceName}"
 
 
 def getFSToken(tokenFile):
