@@ -8,7 +8,7 @@ import { setup, Opts, MESSAGE_ID_REGEX } from './client';
 import { get } from './auth';
 
 const CLIENT = new WebsocketClient({
-  maxReceivedFrameSize: 67108864,
+  maxReceivedMessageSize: 67108864,
 });
 
 // Constants
