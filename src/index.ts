@@ -6,6 +6,7 @@ import { client as WebsocketClient } from 'websocket';
 import Recorder from './record';
 import {
   compute_connection_url,
+  connect,
   setup,
   Opts,
   MESSAGE_ID_REGEX,
@@ -50,9 +51,7 @@ async function main(opts: Opts): Promise<void> {
   const token = await get(AUDIENCE_NAME);
   const connection_url = compute_connection_url(PROTOCOL, HOSTNAME, opts);
 
-  CLIENT.connect(connection_url, [], '', {
-    Authorization: `Bearer ${token}`,
-  });
+  connect(CLIENT, connection_url, token);
 }
 
 yargs
