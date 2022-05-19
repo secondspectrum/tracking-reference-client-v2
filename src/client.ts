@@ -19,6 +19,21 @@ export interface Opts {
   position?: string;
 }
 
+export function compute_connection_url(
+  protocol: string,
+  hostname: string,
+  opts: Opts
+): string {
+  if (!opts.position) {
+    if (opts.test || opts.demo) opts.position = 'start';
+    else opts.position = 'live';
+  }
+
+  const queryString = `league=${opts.league}&feed=${opts.feedName}&gameId=${opts.gameId}&position=${opts.position}&test=${opts.test}&demo=${opts.demo}&gameIdType=${opts.gameIdType}`;
+
+  return `${protocol}://${hostname}?${queryString}`;
+}
+
 export function setup(client: WebsocketClient, recorder: Recorder) {
   let messageNumber = 1;
   let intervalId: NodeJS.Timeout | null = null;

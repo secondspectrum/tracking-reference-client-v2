@@ -4,7 +4,12 @@ import * as yargs from 'yargs';
 import { client as WebsocketClient } from 'websocket';
 
 import Recorder from './record';
-import { setup, Opts, MESSAGE_ID_REGEX } from './client';
+import {
+  compute_connection_url,
+  setup,
+  Opts,
+  MESSAGE_ID_REGEX,
+} from './client';
 import { get } from './auth';
 
 const CLIENT = new WebsocketClient({
@@ -43,14 +48,9 @@ async function main(opts: Opts): Promise<void> {
   const recorder = new Recorder(clientFolder);
   setup(CLIENT, recorder);
   const token = await get(AUDIENCE_NAME);
+  const connection_url = compute_connection_url(PROTOCOL, HOSTNAME, opts);
 
-  if (!opts.position) {
-    if (opts.test || opts.demo) opts.position = 'start';
-    else opts.position = 'live';
-  }
-
-  const queryString = `league=${opts.league}&feed=${opts.feedName}&gameId=${opts.gameId}&position=${opts.position}&test=${opts.test}&demo=${opts.demo}&gameIdType=${opts.gameIdType}`;
-  CLIENT.connect(`${PROTOCOL}://${HOSTNAME}?${queryString}`, [], '', {
+  CLIENT.connect(connection_url, [], '', {
     Authorization: `Bearer ${token}`,
   });
 }
