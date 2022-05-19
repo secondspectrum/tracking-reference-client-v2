@@ -4,13 +4,7 @@ import * as yargs from 'yargs';
 import { client as WebsocketClient } from 'websocket';
 
 import Recorder from './record';
-import {
-  compute_connection_url,
-  connect,
-  setup,
-  Opts,
-  MESSAGE_ID_REGEX,
-} from './client';
+import { compute_connection_url, run, Opts, MESSAGE_ID_REGEX } from './client';
 import { get } from './auth';
 
 const CLIENT = new WebsocketClient({
@@ -47,11 +41,10 @@ async function main(opts: Opts): Promise<void> {
   }
 
   const recorder = new Recorder(clientFolder);
-  setup(CLIENT, recorder);
   const token = await get(AUDIENCE_NAME);
   const connection_url = compute_connection_url(PROTOCOL, HOSTNAME, opts);
 
-  connect(CLIENT, connection_url, token);
+  run(CLIENT, connection_url, token, recorder);
 }
 
 yargs
