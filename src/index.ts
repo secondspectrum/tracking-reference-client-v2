@@ -23,6 +23,7 @@ const FEEDNAMES = [
   'tracking-pose',
   'events',
 ];
+const AUDIENCE_NAME = 'hermes-fast-live.prod';
 
 async function main(opts: Opts): Promise<void> {
   try {
@@ -41,7 +42,7 @@ async function main(opts: Opts): Promise<void> {
 
   const recorder = new Recorder(clientFolder);
   setup(CLIENT, recorder);
-  const token = await get('hermes-fast-live.prod');
+  const token = await get(AUDIENCE_NAME);
 
   if (!opts.position) {
     if (opts.test || opts.demo) opts.position = 'start';
