@@ -6,6 +6,7 @@ import { client as WebsocketClient } from 'websocket';
 import Recorder from './record';
 import {
   compute_connection_url,
+  connect,
   setup,
   Opts,
   MESSAGE_ID_REGEX
@@ -47,9 +48,7 @@ async function main(opts: Opts): Promise<void> {
 
   const connection_url = compute_connection_url(PROTOCOL, HOSTNAME, opts);
 
-  CLIENT.connect(connection_url, [], '', {
-    'x-token': `${opts.authToken}`
-  });
+  connect(CLIENT, connection_url, opts.authToken);
 }
 
 yargs

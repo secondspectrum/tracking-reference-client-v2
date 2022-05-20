@@ -85,3 +85,13 @@ export function setup(client: WebsocketClient, recorder: Recorder) {
     });
   });
 }
+
+export function connect(
+  client: WebsocketClient,
+  connection_url: string,
+  token: string
+) {
+  client.connect(connection_url, [], '', {
+    'x-token': `${token}`
+  });
+}
