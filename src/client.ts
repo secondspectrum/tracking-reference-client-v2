@@ -33,7 +33,17 @@ export function compute_connection_url(
   return `${protocol}://${hostname}?${queryString}`;
 }
 
-export function setup(client: WebsocketClient, recorder: Recorder) {
+export function run(
+  client: WebsocketClient,
+  connection_url: string,
+  token: string,
+  recorder: Recorder
+) {
+  setup(client, recorder);
+  connect(client, connection_url, token);
+}
+
+function setup(client: WebsocketClient, recorder: Recorder) {
   let messageNumber = 1;
   let intervalId: NodeJS.Timeout | null = null;
 
@@ -86,7 +96,7 @@ export function setup(client: WebsocketClient, recorder: Recorder) {
   });
 }
 
-export function connect(
+function connect(
   client: WebsocketClient,
   connection_url: string,
   token: string
