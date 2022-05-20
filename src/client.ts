@@ -1,6 +1,9 @@
 import { client as WebsocketClient } from 'websocket';
 import Recorder from './record';
 
+const RETRY_TIMEOUT_BASE_MS = 1000;
+const RETRY_TIMEOUT_MAX_MS = 10000;
+const RETRY_MAX_ATTEMPTS = 10;
 const PING_CHECK_INTERVAL = 30 * 1000;
 export const UUID_V4_REGEX = new RegExp(
   /^[A-Za-z0-9]{8}-[A-Za-z0-9]{4}-4[A-Za-z0-9]{3}-[A-Za-z0-9]{4}-[A-Za-z0-9]{12}$/
@@ -40,16 +43,37 @@ export function run(
   token: string,
   recorder: Recorder
 ) {
-  setup(client, recorder);
+  setup(client, connection_url, token, recorder);
   connect(client, connection_url, token);
 }
 
-function setup(client: WebsocketClient, recorder: Recorder) {
+function setup(
+  client: WebsocketClient,
+  connection_url: string,
+  token: string,
+  recorder: Recorder
+) {
   let messageNumber = 1;
   let intervalId: NodeJS.Timeout | null = null;
+  let retry_attempts = 0;
 
   client.on('connectFailed', (error) => {
     console.log(`${error.toString()}`);
+  });
+
+  client.on('httpResponse', (response, client) => {
+    if (response.statusCode === 429 && retry_attempts < RETRY_MAX_ATTEMPTS) {
+      console.log(
+        `Connection rejected because of too many simultaneous requests; retrying after timeout....`
+      );
+      let timeout = computeTimeoutMs(retry_attempts);
+      retry_attempts++;
+      setTimeout(() => {
+        connect(client, connection_url, token);
+      }, timeout);
+    } else {
+      console.log(`${response.toString()}`);
+    }
   });
 
   client.on('connect', (conn) => {
@@ -105,4 +129,11 @@ function connect(
   client.connect(connection_url, [], '', {
     Authorization: `Bearer ${token}`,
   });
+}
+
+function computeTimeoutMs(retry_attempts: number): number {
+  return Math.min(
+    RETRY_TIMEOUT_BASE_MS * Math.pow(2, retry_attempts),
+    RETRY_TIMEOUT_MAX_MS
+  );
 }
