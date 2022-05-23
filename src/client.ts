@@ -1,6 +1,8 @@
 import { client as WebsocketClient } from 'websocket';
 import Recorder from './record';
 
+const PROTOCOL = 'wss';
+const HOSTNAME = 'live-v2.secondspectrum.com';
 const RETRY_TIMEOUT_BASE_MS = 1000;
 const RETRY_TIMEOUT_MAX_MS = 10000;
 const RETRY_MAX_ATTEMPTS = 10;
@@ -21,11 +23,7 @@ export interface Opts {
   position?: string;
 }
 
-export function compute_connection_url(
-  protocol: string,
-  hostname: string,
-  opts: Opts
-): string {
+export function computeConnectionUrl(opts: Opts): string {
   if (!opts.position) {
     if (opts.test === true) opts.position = 'start';
     else opts.position = 'live';
@@ -33,42 +31,42 @@ export function compute_connection_url(
 
   const queryString = `league=${opts.league}&feed=${opts.feedName}&gameId=${opts.gameId}&position=${opts.position}&test=${opts.test}&gameIdType=${opts.gameIdType}`;
 
-  return `${protocol}://${hostname}?${queryString}`;
+  return `${PROTOCOL}://${HOSTNAME}?${queryString}`;
 }
 
 export function run(
   client: WebsocketClient,
-  connection_url: string,
+  connectionUrl: string,
   token: string,
   recorder: Recorder
 ) {
-  setup(client, connection_url, token, recorder);
-  connect(client, connection_url, token);
+  setup(client, connectionUrl, token, recorder);
+  connect(client, connectionUrl, token);
 }
 
 function setup(
   client: WebsocketClient,
-  connection_url: string,
+  connectionUrl: string,
   token: string,
   recorder: Recorder
 ) {
   let messageNumber = 1;
   let intervalId: NodeJS.Timeout | null = null;
-  let retry_attempts = 0;
+  let retryAttempts = 0;
 
   client.on('connectFailed', (error) => {
     console.log(`${error.toString()}`);
   });
 
   client.on('httpResponse', (response, client) => {
-    if (response.statusCode === 429 && retry_attempts < RETRY_MAX_ATTEMPTS) {
+    if (response.statusCode === 429 && retryAttempts < RETRY_MAX_ATTEMPTS) {
       console.log(
         `Connection rejected because of too many simultaneous requests; retrying after timeout....`
       );
-      let timeout = computeTimeoutMs(retry_attempts);
-      retry_attempts++;
+      let timeout = computeTimeoutMs(retryAttempts);
+      retryAttempts++;
       setTimeout(() => {
-        connect(client, connection_url, token);
+        connect(client, connectionUrl, token);
       }, timeout);
     } else {
       console.log(`${response.toString()}`);
@@ -122,17 +120,17 @@ function setup(
 
 function connect(
   client: WebsocketClient,
-  connection_url: string,
+  connectionUrl: string,
   token: string
 ) {
-  client.connect(connection_url, [], '', {
+  client.connect(connectionUrl, [], '', {
     'x-token': `${token}`
   });
 }
 
-function computeTimeoutMs(retry_attempts: number): number {
+function computeTimeoutMs(retryAttempts: number): number {
   return Math.min(
-    RETRY_TIMEOUT_BASE_MS * Math.pow(2, retry_attempts),
+    RETRY_TIMEOUT_BASE_MS * Math.pow(2, retryAttempts),
     RETRY_TIMEOUT_MAX_MS
   );
 }

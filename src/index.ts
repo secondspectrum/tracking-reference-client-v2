@@ -4,15 +4,13 @@ import * as yargs from 'yargs';
 import { client as WebsocketClient } from 'websocket';
 
 import Recorder from './record';
-import { compute_connection_url, run, Opts, MESSAGE_ID_REGEX } from './client';
+import { computeConnectionUrl, run, Opts, MESSAGE_ID_REGEX } from './client';
 
 const CLIENT = new WebsocketClient({
   maxReceivedFrameSize: 67108864
 });
 
 // Constants
-const PROTOCOL = 'wss';
-const HOSTNAME = 'live-v2.secondspectrum.com';
 const FEEDNAMES = [
   'tracking-fast',
   'tracking-fast-refs',
@@ -38,9 +36,9 @@ async function main(opts: Opts): Promise<void> {
   }
 
   const recorder = new Recorder(clientFolder);
-  const connection_url = compute_connection_url(PROTOCOL, HOSTNAME, opts);
+  const connectionUrl = computeConnectionUrl(opts);
 
-  run(CLIENT, connection_url, opts.authToken, recorder);
+  run(CLIENT, connectionUrl, opts.authToken, recorder);
 }
 
 yargs
