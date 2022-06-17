@@ -59,7 +59,6 @@ npm run build
 
 ```
 node lib/index.js record \
-  --league <league> \
   --gameId <game id> \
   --gameIdType <opta or ssi> \
   --feedName <feedName>. Default tracking-fast \
@@ -84,7 +83,6 @@ Example command to connect to test feeds
 
 ```
 node lib/index.js record \
-  --league <league> \
   --gameId <game id> \
   --gameIdType <opta or ssi> \
   --feedName <feedName>. Default tracking-fast \
