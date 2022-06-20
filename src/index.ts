@@ -48,7 +48,7 @@ async function main(opts: Opts): Promise<void> {
     else opts.position = 'live';
   }
 
-  const queryString = `league=${opts.league}&feed=${opts.feedName}&gameId=${opts.gameId}&position=${opts.position}&test=${opts.test}&demo=${opts.demo}&gameIdType=${opts.gameIdType}`;
+  const queryString = `feed=${opts.feedName}&gameId=${opts.gameId}&position=${opts.position}&test=${opts.test}&demo=${opts.demo}&gameIdType=${opts.gameIdType}`;
   CLIENT.connect(`${PROTOCOL}://${HOSTNAME}?${queryString}`, [], '', {
     Authorization: `Bearer ${token}`,
   });
@@ -61,7 +61,6 @@ yargs
     'Start Data Ingestion',
     (yargs_) => {
       yargs_
-        .option('league', { type: 'string', demandOption: true })
         .option('gameId', { type: 'string', demandOption: true })
         .option('folderName', { type: 'string', demandOption: true })
         .option('feedName', {
