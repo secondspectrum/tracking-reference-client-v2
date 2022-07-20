@@ -7,7 +7,7 @@ const apiUrl = process.argv[3];
 
 async function getToken(): Promise<string> {
   try {
-    return get('hermes-fast-live.prod');
+    return get('hermes-api-external.prod');
   } catch (err) {
     throw new Error('Failed to authenticate request. Contact support.');
   }
