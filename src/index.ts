@@ -14,15 +14,6 @@ const CLIENT = new WebsocketClient({
 // Constants
 const PROTOCOL = 'wss';
 const HOSTNAME = 'live-v2.secondspectrum.com';
-const FEEDNAMES = [
-  'tracking-fast',
-  'tracking-fast-refs',
-  'tracking-refs-produced',
-  'tracking-produced',
-  'insight',
-  'tracking-pose',
-  'events',
-];
 
 async function main(opts: Opts): Promise<void> {
   try {
@@ -67,7 +58,6 @@ yargs
           type: 'string',
           demandOption: true,
           default: 'tracking-fast',
-          choices: FEEDNAMES,
         })
         .option('gameIdType', {
           type: 'string',
