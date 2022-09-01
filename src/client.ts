@@ -1,6 +1,11 @@
 import { client as WebsocketClient } from 'websocket';
 import Recorder from './record';
 
+const PROTOCOL = 'wss';
+const HOSTNAME = 'live-v2.secondspectrum.com';
+const RETRY_TIMEOUT_BASE_MS = 1000;
+const RETRY_TIMEOUT_MAX_MS = 10000;
+const RETRY_MAX_ATTEMPTS = 10;
 const PING_CHECK_INTERVAL = 30 * 1000;
 export const UUID_V4_REGEX = new RegExp(
   /^[A-Za-z0-9]{8}-[A-Za-z0-9]{4}-4[A-Za-z0-9]{3}-[A-Za-z0-9]{4}-[A-Za-z0-9]{12}$/
@@ -18,12 +23,54 @@ export interface Opts {
   position?: string;
 }
 
-export function setup(client: WebsocketClient, recorder: Recorder) {
+export function computeConnectionUrl(opts: Opts): string {
+  if (!opts.position) {
+    if (opts.test === true) opts.position = 'start';
+    else opts.position = 'live';
+  }
+
+  const queryString = `league=${opts.league}&feed=${opts.feedName}&gameId=${opts.gameId}&position=${opts.position}&test=${opts.test}&gameIdType=${opts.gameIdType}`;
+
+  return `${PROTOCOL}://${HOSTNAME}?${queryString}`;
+}
+
+export function run(
+  client: WebsocketClient,
+  connectionUrl: string,
+  token: string,
+  recorder: Recorder
+) {
+  setup(client, connectionUrl, token, recorder);
+  connect(client, connectionUrl, token);
+}
+
+function setup(
+  client: WebsocketClient,
+  connectionUrl: string,
+  token: string,
+  recorder: Recorder
+) {
   let messageNumber = 1;
   let intervalId: NodeJS.Timeout | null = null;
+  let retryAttempts = 0;
 
   client.on('connectFailed', (error) => {
     console.log(`${error.toString()}`);
+  });
+
+  client.on('httpResponse', (response, client) => {
+    if (response.statusCode === 429 && retryAttempts < RETRY_MAX_ATTEMPTS) {
+      console.log(
+        `Connection rejected because of too many simultaneous requests; retrying after timeout....`
+      );
+      let timeout = computeTimeoutMs(retryAttempts);
+      retryAttempts++;
+      setTimeout(() => {
+        connect(client, connectionUrl, token);
+      }, timeout);
+    } else {
+      console.log(`${response.toString()}`);
+    }
   });
 
   client.on('connect', (conn) => {
@@ -69,4 +116,21 @@ export function setup(client: WebsocketClient, recorder: Recorder) {
       numPongsMissed = 0;
     });
   });
+}
+
+function connect(
+  client: WebsocketClient,
+  connectionUrl: string,
+  token: string
+) {
+  client.connect(connectionUrl, [], '', {
+    'x-token': `${token}`
+  });
+}
+
+function computeTimeoutMs(retryAttempts: number): number {
+  return Math.min(
+    RETRY_TIMEOUT_BASE_MS * Math.pow(2, retryAttempts),
+    RETRY_TIMEOUT_MAX_MS
+  );
 }
