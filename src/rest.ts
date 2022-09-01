@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+import * as fs from 'graceful-fs';
 import axios from 'axios';
 import { get } from './auth';
 
