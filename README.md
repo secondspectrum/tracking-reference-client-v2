@@ -1,11 +1,55 @@
-# Second Spectrum Live V2 Reference Client
+# Second Spectrum REST API Client
+The API can be hit using Node.js or bash. If you aren't sure, opt to use Node.
+## Node.js
+### Setup
+
+This package requires Node / NPM on the system. Node 14.14 is recommended. You can verify your node version by running `npm run version`. The latest version of Node can be found here: https://nodejs.org/
+
+### Add your credentials (Client ID and Client Secret)
+
+- Navigate to `src/auth.ts` and add your credentials there
+- If you change the credentials, make sure to rebuild the client as below
+
+### Building the Reference Client
+
+*WINDOWS USERS: Before running the steps below, please copy the contents of `package-windows.sample.json` into `package.json` and make sure Visual Studio Build Tools are installed*
+```
+npm ci
+npm run build
+```
+### Getting data
+- `node lib/rest.js [output_file_name] [API_endpoint_url]`
+- Run the above command, replacing the filename (and brackets) and the API endpoint url with a url from the documentation
+## Bash (Windows incompatible)
+### Setup
+- Download `jq`. Please navigate to https://stedolan.github.io/jq/download/ to install `jq`
+- NOTE for Mac OS X users: if you don't have it already, please install Homebrew (https://brew.sh/)
+
+### Add your credentials (Client ID and Client Secret)
+
+- Navigate to `bash/auth.sh` and add your CLIENT_ID and CLIENT_SECRET
+
+### Getting data
+
+- Enter the API endpoint you are trying to hit as the value for `API_URL` in `bash/rest_api_reference_client.sh`
+  - Please refer to the documentation to determine what the API URL should be
+- The command to run is `sh bash/rest_api_reference_client.sh outputFilename` where outputFilename is a name of your choosing
+  - NOTE that it is important to run the command from the root of this folder
+- Once the command completes, you should see data located at `outputFilename`
+
+# Second Spectrum Live Data Reference Client
 
 ## Setup
 
 This package requires Node / NPM on the system. Node 14.14 is recommended. You can verify your node version by running `npm run version`. The latest version of Node can be found here: https://nodejs.org/
 
+## Add your credentials (Client ID and Client Secret)
+
+- Navigate to `src/auth.ts` and add your credentials there
+
 ## Building the Reference Client
 
+*WINDOWS USERS: Before running the steps below, please copy the contents of `package-windows.sample.json` into `package.json` and make sure Visual Studio Build Tools are installed*
 ```
 npm ci
 npm run build
@@ -15,9 +59,7 @@ npm run build
 
 ```
 node lib/index.js record \
-  --league <league> \
   --gameId <game id> \
-  --authToken <auth token> \
   --gameIdType <opta or ssi> \
   --feedName <feedName>. Default tracking-fast \
   --folderName <folder to write data to>
@@ -31,6 +73,7 @@ The `gameIdType` field:
 Optional Parameters:
 
 - `test`: If true, connects you to the test feed. Default false.
+- `demo`: If true, connects you to the demo feed. Default false.
 - `position`:
   - `start`: Ingest data starting from the beginning of the stream. Default if test is true
   - `live` : Ingest data starting from the current tip of the stream. Default if test is false
@@ -40,9 +83,7 @@ Example command to connect to test feeds
 
 ```
 node lib/index.js record \
-  --league <league> \
   --gameId <game id> \
-  --authToken <auth token> \
   --gameIdType <opta or ssi> \
   --feedName <feedName>. Default tracking-fast \
   --test <boolean> \
@@ -52,20 +93,6 @@ node lib/index.js record \
 NOTE: For test feeds, we AUTOMATICALLY set the position to `start` if not specified
 
 ## Error handling
-
-#### CLI Verification
-
-The CLI will:
-
-- Validate that the gameIdType is either `ssi` or `opta`
-- Validate that postion is one of `start` and `live` or a message ID of the form `number:number`
-- Validate that feedName is one of:
-  - `tracking-fast`
-  - `tracking-fast-refs`
-  - `tracking-produced`
-  - `tracking-refs-produced`
-  - `insight`
-
 #### Websocket Error Messages
 
 The Websocket can return the following error messages:
@@ -74,11 +101,6 @@ The Websocket can return the following error messages:
 - `Reason: Internal Server Error. No feed found for game [ID]`: No game feeds exist for this game
 - `Reason: Inactive Feed`: The game feed has not started yet
   - Feeds start 1 hour prior to game start and stop 7 hours after game start
-
-#### Throttled Writes
-
-- If you see the log message about file writes getting throttled, the reason is most likely the following: https://wilsonmar.github.io/maximum-limits/
-- We handle that by queueing writes that failed on an async queue to be written later
 
 ## Record Data
 

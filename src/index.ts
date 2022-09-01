@@ -1,24 +1,15 @@
-import { promises as fs } from 'graceful-fs';
+import { promises as fs } from 'fs';
 import { join } from 'path';
 import * as yargs from 'yargs';
 import { client as WebsocketClient } from 'websocket';
 
+import { get } from './auth';
 import Recorder from './record';
 import { computeConnectionUrl, run, Opts, MESSAGE_ID_REGEX } from './client';
 
 const CLIENT = new WebsocketClient({
-  maxReceivedFrameSize: 67108864
+  maxReceivedFrameSize: 67108864,
 });
-
-// Constants
-const FEEDNAMES = [
-  'tracking-fast',
-  'tracking-fast-refs',
-  'tracking-refs-produced',
-  'tracking-produced',
-  'insight',
-  'tracking-pose'
-];
 
 async function main(opts: Opts): Promise<void> {
   try {
@@ -38,7 +29,8 @@ async function main(opts: Opts): Promise<void> {
   const recorder = new Recorder(clientFolder);
   const connectionUrl = computeConnectionUrl(opts);
 
-  run(CLIENT, connectionUrl, opts.authToken, recorder);
+  const token = await get('hermes-fast-live.prod');
+  run(CLIENT, connectionUrl, token, recorder);
 }
 
 yargs
@@ -48,28 +40,26 @@ yargs
     'Start Data Ingestion',
     (yargs_) => {
       yargs_
-        .option('league', { type: 'string', demandOption: true })
         .option('gameId', { type: 'string', demandOption: true })
-        .option('authToken', { type: 'string', demandOption: true })
         .option('folderName', { type: 'string', demandOption: true })
         .option('feedName', {
           type: 'string',
           demandOption: true,
           default: 'tracking-fast',
-          choices: FEEDNAMES
         })
         .option('gameIdType', {
           type: 'string',
           demandOption: true,
-          choices: ['opta', 'ssi']
+          choices: ['opta', 'ssi', 'ngss'],
         })
         .option('position', {
-          type: 'string'
+          type: 'string',
         })
         .option('test', { type: 'boolean', default: false })
+        .option('demo', { type: 'boolean', default: false })
         .option('json', {
           type: 'boolean',
-          default: false
+          default: false,
         })
         .check((argv, _) => {
           const position = argv.position;

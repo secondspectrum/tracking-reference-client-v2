@@ -5,15 +5,13 @@
   "main": "lib/index.js",
   "scripts": {
     "version": "node -v",
-    "build": "rm -rf lib && tsc --pretty && npm run prettier",
-    "lint": "eslint --ext .ts src",
-    "prettier": "prettier --loglevel error --write './src/**/*.ts'"
+    "test": "npm run test",
+    "build": "del lib && tsc --pretty"
   },
   "author": "Second Spectrum",
   "license": "UNLICENSCED",
   "dependencies": {
     "axios": "~0.21.1",
-    "path": "~0.12.7",
     "websocket": "^1.0.34",
     "yargs": "^16.2.0"
   },
@@ -27,8 +25,5 @@
     "eslint-plugin-import": "^2.25.4",
     "prettier": "^2.5.1",
     "typescript": "^4.5.4"
-  },
-  "prettier": {
-    "singleQuote": true
   }
 }

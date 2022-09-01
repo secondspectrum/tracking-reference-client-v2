@@ -13,11 +13,11 @@ export const UUID_V4_REGEX = new RegExp(
 export const MESSAGE_ID_REGEX = new RegExp(/^[0-9]+:[0-9]+$/);
 
 export interface Opts {
-  league: string;
   gameId: string;
   gameIdType: string;
   authToken: string;
   test: boolean;
+  demo: boolean;
   folderName: string;
   feedName: string;
   position?: string;
@@ -25,11 +25,11 @@ export interface Opts {
 
 export function computeConnectionUrl(opts: Opts): string {
   if (!opts.position) {
-    if (opts.test === true) opts.position = 'start';
+    if (opts.test || opts.demo) opts.position = 'start';
     else opts.position = 'live';
   }
 
-  const queryString = `league=${opts.league}&feed=${opts.feedName}&gameId=${opts.gameId}&position=${opts.position}&test=${opts.test}&gameIdType=${opts.gameIdType}`;
+  const queryString = `feed=${opts.feedName}&gameId=${opts.gameId}&position=${opts.position}&test=${opts.test}&gameIdType=${opts.gameIdType}`;
 
   return `${PROTOCOL}://${HOSTNAME}?${queryString}`;
 }
@@ -124,7 +124,7 @@ function connect(
   token: string
 ) {
   client.connect(connectionUrl, [], '', {
-    'x-token': `${token}`
+    Authorization: `Bearer ${token}`,
   });
 }
 
