@@ -6,7 +6,7 @@ image: 676020893150.dkr.ecr.us-east-1.amazonaws.com/node:16
 upload:
   stage: build
   script:
-    - apt-get update && apt-get install awscli
+    - apt-get update && apt-get install -y awscli
     - npm ci
     - npm run build
     - npm run pkg
