@@ -29,7 +29,11 @@ async function main(opts: Opts): Promise<void> {
   const recorder = new Recorder(clientFolder);
   const connectionUrl = computeConnectionUrl(opts);
 
-  const token = await get('hermes-fast-live.prod');
+  const token = await get(
+    'hermes-fast-live.prod',
+    opts.clientId,
+    opts.clientSecret
+  );
   run(CLIENT, connectionUrl, token, recorder);
 }
 
@@ -61,6 +65,8 @@ yargs
           type: 'boolean',
           default: false,
         })
+        .option('clientId', { type: 'string', demandOption: true })
+        .option('clientSecret', { type: 'string', demandOption: true })
         .check((argv, _) => {
           const position = argv.position;
           if (position) {

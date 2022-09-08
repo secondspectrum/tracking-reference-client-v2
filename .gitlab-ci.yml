@@ -1,0 +1,12 @@
+stages:
+  - build
+
+image: 676020893150.dkr.ecr.us-east-1.amazonaws.com/node:16
+
+packaging:
+  stage: build
+  script:
+    - npm ci
+    - npm run build
+    - npm run pkg
+    - aws cp dist/* s3://ssi-misc/hermes-reference-client/

@@ -5,9 +5,12 @@ import { get } from './auth';
 const outputFile = process.argv[2];
 const apiUrl = process.argv[3];
 
+const clientId = '';
+const clientSecret = '';
+
 async function getToken(): Promise<string> {
   try {
-    return get('hermes-api-external.prod');
+    return await get('hermes-api-external.prod', clientId, clientSecret);
   } catch (err) {
     throw new Error('Failed to authenticate request. Contact support.');
   }

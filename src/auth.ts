@@ -3,9 +3,6 @@ import * as fs from 'graceful-fs';
 import * as path from 'path';
 import * as http from 'http';
 
-const CLIENT_ID = 'YOUR CLIENT ID';
-const CLIENT_SECRET = 'YOUR CLIENT SECRET';
-
 const AUTH_DOMAIN = 'secondspectrum.auth0.com';
 
 interface FetchTokenInput {
@@ -20,12 +17,15 @@ interface TokenRequest {
   expires: number;
 }
 
-export async function get(audienceName: string): Promise<string> {
-  const { clientId, clientSecret, authDomain } = {
-    clientId: CLIENT_ID,
-    clientSecret: CLIENT_SECRET,
+export async function get(
+  audienceName: string,
+  clientId: string,
+  clientSecret: string
+): Promise<string> {
+  const { authDomain } = {
     authDomain: AUTH_DOMAIN,
   };
+
   const key = getCacheKey(clientId, audienceName, authDomain);
 
   const tokenFile = path.format({

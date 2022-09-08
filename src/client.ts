@@ -21,6 +21,8 @@ export interface Opts {
   folderName: string;
   feedName: string;
   position?: string;
+  clientId: string;
+  clientSecret: string;
 }
 
 export function computeConnectionUrl(opts: Opts): string {
@@ -61,7 +63,7 @@ function setup(
   client.on('httpResponse', (response, client) => {
     if (response.statusCode === 429 && retryAttempts < RETRY_MAX_ATTEMPTS) {
       console.log(
-        `Connection rejected because of too many simultaneous requests; retrying after timeout....`
+        'Connection rejected because of too many simultaneous requests; retrying after timeout....'
       );
       let timeout = computeTimeoutMs(retryAttempts);
       retryAttempts++;
