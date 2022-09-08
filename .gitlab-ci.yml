@@ -3,9 +3,10 @@ stages:
 
 image: 676020893150.dkr.ecr.us-east-1.amazonaws.com/node:16
 
-packaging:
+upload:
   stage: build
   script:
+    - apt-get update && apt-get install aws
     - npm ci
     - npm run build
     - npm run pkg
