@@ -10,4 +10,4 @@ upload:
     - npm ci
     - npm run build
     - npm run pkg
-    - aws cp dist/* s3://ssi-misc/hermes-reference-client/
+    - aws s3 cp dist/* s3://ssi-misc/hermes-reference-client/
