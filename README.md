@@ -11,11 +11,17 @@ This package requires Node / NPM on the system. Node 14.14 is recommended. You c
 - If you change the credentials, make sure to rebuild the client as below
 
 ### Building the Reference Client
-
-*WINDOWS USERS: Before running the steps below, please copy the contents of `package-windows.sample.json` into `package.json` and make sure Visual Studio Build Tools are installed*
+This is a two-step process. NOTE that the second step changes based on which OS you are running
 ```
-npm ci
-npm run build
+1. npm ci
+```
+For Windows users ONLY:
+```
+2. npm run build-windows
+``` 
+For non-Windows users:
+```
+2. npm run build
 ```
 ### Getting data
 - `node lib/rest.js [output_file_name] [API_endpoint_url]`
