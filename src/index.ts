@@ -29,11 +29,7 @@ async function main(opts: Opts): Promise<void> {
   const recorder = new Recorder(clientFolder);
   const connectionUrl = computeConnectionUrl(opts);
 
-  const token = await get(
-    'hermes-fast-live.prod',
-    CLIENT_ID,
-    CLIENT_SECRET
-  );
+  const token = await get('hermes-fast-live.prod', CLIENT_ID, CLIENT_SECRET);
 
   run(CLIENT, connectionUrl, token, recorder);
 }

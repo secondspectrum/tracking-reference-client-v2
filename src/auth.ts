@@ -69,7 +69,7 @@ function getFSToken(tokenFile: string): TokenRequest | undefined {
     const tokenStr = fs.readFileSync(tokenFile, { encoding: 'utf8' });
     const token: TokenRequest = JSON.parse(tokenStr);
     return token;
-  } catch { }
+  } catch {}
 }
 
 function getCacheKey(
@@ -111,4 +111,4 @@ async function fetchTokenClientCreds(
   };
 }
 
-export { get, CLIENT_ID, CLIENT_SECRET }
+export { get, CLIENT_ID, CLIENT_SECRET };
