@@ -5,6 +5,9 @@ import * as http from 'http';
 
 const AUTH_DOMAIN = 'secondspectrum.auth0.com';
 
+const CLIENT_ID = '';
+const CLIENT_SECRET = '';
+
 interface FetchTokenInput {
   clientId: string;
   clientSecret: string;
@@ -17,7 +20,7 @@ interface TokenRequest {
   expires: number;
 }
 
-export async function get(
+async function get(
   audienceName: string,
   clientId: string,
   clientSecret: string
@@ -66,7 +69,7 @@ function getFSToken(tokenFile: string): TokenRequest | undefined {
     const tokenStr = fs.readFileSync(tokenFile, { encoding: 'utf8' });
     const token: TokenRequest = JSON.parse(tokenStr);
     return token;
-  } catch {}
+  } catch { }
 }
 
 function getCacheKey(
@@ -107,3 +110,5 @@ async function fetchTokenClientCreds(
     expires: Date.now() / 1000.0 + data.expires_in,
   };
 }
+
+export { get, CLIENT_ID, CLIENT_SECRET }
