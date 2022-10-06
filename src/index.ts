@@ -3,7 +3,7 @@ import { join } from 'path';
 import * as yargs from 'yargs';
 import { client as WebsocketClient } from 'websocket';
 
-import { get } from './auth';
+import { get, CLIENT_ID, CLIENT_SECRET } from './auth';
 import Recorder from './record';
 import { computeConnectionUrl, run, Opts, MESSAGE_ID_REGEX } from './client';
 
@@ -29,7 +29,8 @@ async function main(opts: Opts): Promise<void> {
   const recorder = new Recorder(clientFolder);
   const connectionUrl = computeConnectionUrl(opts);
 
-  const token = await get('hermes-fast-live.prod');
+  const token = await get('hermes-fast-live.prod', CLIENT_ID, CLIENT_SECRET);
+
   run(CLIENT, connectionUrl, token, recorder);
 }
 
@@ -61,6 +62,8 @@ yargs
           type: 'boolean',
           default: false,
         })
+        // .option('clientId', { type: 'string', demandOption: true })
+        // .option('clientSecret', { type: 'string', demandOption: true })
         .check((argv, _) => {
           const position = argv.position;
           if (position) {

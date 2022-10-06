@@ -6,8 +6,10 @@
   "scripts": {
     "version": "node -v",
     "build": "rm -rf lib && tsc --pretty && npm run prettier",
+    "build-windows": "del lib && tsc --pretty",
     "lint": "eslint --ext .ts src",
-    "prettier": "prettier --loglevel error --write './src/**/*.ts'"
+    "prettier": "prettier --loglevel error --write './src/**/*.ts'",
+    "pkg": "pkg lib/index.js --targets=node16-macos-arm64,node16-macos-x64,node16-win-x64,node16-linux-x64 --out-path dist"
   },
   "author": "Second Spectrum",
   "license": "UNLICENSCED",
@@ -30,7 +32,8 @@
     "eslint-config-airbnb-typescript": "^16.1.0",
     "eslint-plugin-import": "^2.25.4",
     "prettier": "^2.5.1",
-    "typescript": "^4.5.4"
+    "typescript": "^4.5.4",
+    "pkg": "^5"
   },
   "prettier": {
     "singleQuote": true

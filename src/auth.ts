@@ -20,12 +20,15 @@ interface TokenRequest {
   expires: number;
 }
 
-export async function get(audienceName: string): Promise<string> {
-  const { clientId, clientSecret, authDomain } = {
-    clientId: CLIENT_ID,
-    clientSecret: CLIENT_SECRET,
+async function get(
+  audienceName: string,
+  clientId: string,
+  clientSecret: string
+): Promise<string> {
+  const { authDomain } = {
     authDomain: AUTH_DOMAIN,
   };
+
   const key = getCacheKey(clientId, audienceName, authDomain);
 
   const tokenFile = path.format({
@@ -107,3 +110,5 @@ async function fetchTokenClientCreds(
     expires: Date.now() / 1000.0 + data.expires_in,
   };
 }
+
+export { get, CLIENT_ID, CLIENT_SECRET };

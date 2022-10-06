@@ -1,13 +1,13 @@
 import * as fs from 'graceful-fs';
 import axios from 'axios';
-import { get } from './auth';
+import { get, CLIENT_ID, CLIENT_SECRET } from './auth';
 
 const outputFile = process.argv[2];
 const apiUrl = process.argv[3];
 
 async function getToken(): Promise<string> {
   try {
-    return get('hermes-api-external.prod');
+    return await get('hermes-api-external.prod', CLIENT_ID, CLIENT_SECRET);
   } catch (err) {
     throw new Error('Failed to authenticate request. Contact support.');
   }
