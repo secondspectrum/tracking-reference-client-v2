@@ -5,6 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "version": "node -v",
+    "build-windows": "del lib && tsc --pretty",
     "build": "rm -rf lib && tsc --pretty && npm run prettier",
     "lint": "eslint --ext .ts src",
     "prettier": "prettier --loglevel error --write './src/**/*.ts'",
