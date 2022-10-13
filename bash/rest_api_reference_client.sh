@@ -9,10 +9,11 @@ fi
 
 token=$(sh ./bash/auth.sh)
 
-response=$(curl -L $API_URL \
-  -H 'accept-language: en-US,en;q=0.9' \
-  -H 'authorization: Bearer '$token)
+mkdir -p "$(dirname "$1")"
 
-mkdir -p "$(dirname "$1")" && touch "$1"
-echo $response >"$1"
+curl -L $API_URL \
+  -H 'accept-language: en-US,en;q=0.9' \
+  -H 'authorization: Bearer '$token \
+  -o $1
+
 exit 0
