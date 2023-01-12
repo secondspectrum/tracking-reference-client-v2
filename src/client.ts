@@ -31,7 +31,7 @@ export function computeConnectionUrl(opts: Opts): string {
     else opts.position = 'live';
   }
 
-  const queryString = `feed=${opts.feedName}&gameId=${opts.gameId}&position=${opts.position}&test=${opts.test}&gameIdType=${opts.gameIdType}`;
+  const queryString = `feed=${opts.feedName}&gameId=${opts.gameId}&position=${opts.position}&test=${opts.test}&gameIdType=${opts.gameIdType}&demo=${opts.demo}`;
 
   return `${PROTOCOL}://${HOSTNAME}?${queryString}`;
 }
