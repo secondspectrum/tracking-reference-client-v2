@@ -62,8 +62,6 @@ yargs
           type: 'boolean',
           default: false,
         })
-        // .option('clientId', { type: 'string', demandOption: true })
-        // .option('clientSecret', { type: 'string', demandOption: true })
         .check((argv, _) => {
           const position = argv.position;
           if (position) {

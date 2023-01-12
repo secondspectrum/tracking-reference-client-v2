@@ -21,8 +21,6 @@ export interface Opts {
   folderName: string;
   feedName: string;
   position?: string;
-  clientId: string;
-  clientSecret: string;
 }
 
 export function computeConnectionUrl(opts: Opts): string {
