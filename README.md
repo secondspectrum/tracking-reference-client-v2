@@ -43,6 +43,22 @@ For non-Windows users:
   - NOTE that it is important to run the command from the root of this folder
 - Once the command completes, you should see data located at `outputFilename`
 
+### Request Authentication (How it works)
+- In order to make a request to the REST API, the user must first authenticate with the server
+- User must have a clientId and clientSecret provided to them by Second Spectrum
+- With the clientID and clientSecret, the user must retrieve an access token (JWT) that MUST be passed in the request header
+- The request header must include an `Authorization` key and it's value must be `Bearer <INSERT ACCESS TOKEN HERE>`
+- Example Header:
+```
+{
+    Authorization: Bearer sampletestaccesstoken
+}
+```
+- You can use `bash/auth.sh` as a reference on how to get the JWT
+- IMPORTANT: Once you retrieve a JWT, **it is VALID for 30 days**
+    - Please ONLY request a new JWT if the previous one has expired
+- The `bash/auth.sh` also includes sample code on how to cache your JWT and request a new one if the current one has expired
+
 # Second Spectrum Live Data Reference Client
 
 ## Setup
