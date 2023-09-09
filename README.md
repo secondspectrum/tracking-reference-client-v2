@@ -59,6 +59,18 @@ For non-Windows users:
     - Please ONLY request a new JWT if the previous one has expired
 - The `bash/auth.sh` also includes sample code on how to cache your JWT and request a new one if the current one has expired
 
+### NOTE: FOR AZURE USERS ONLY
+- When using Azure and trying to download any competition, game group or gamedata, you may get an error like so:
+```
+Only one auth mechanism allowed; only the X-Amz-Algorithm query parameter, Signature query string parameter or the Authorization header should be specified
+```
+- To get around this, we provide a `redirect` query parameter that you can set to `false` so that you are not automatically redirected to the presigned AWS S3 URL
+- For example, given the following request: `https://api.secondspectrum.com/competitiondata/ngss/games.json?competitionId=00`, you would add `&redirect=false` at the end
+- The new request would be `https://api.secondspectrum.com/competitiondata/ngss/games.json?competitionId=00&redirect=false`
+- When `redirect` is set to false, the REST API will return the presigned S3 URL in the response
+- You will then need to make a SEPARATE HTTP request to hit that presigned S3 URL and download the data
+- Note that the presigned URL is active for 1 hour from when it's created
+
 # Second Spectrum Live Data Reference Client
 
 ## Setup
