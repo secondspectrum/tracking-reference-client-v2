@@ -54,7 +54,7 @@ async function get(
       fs.writeSync(f, JSON.stringify(newToken));
       fs.closeSync(f);
     } catch (err: unknown) {
-      console.error('Failed to cache your token file. Please alert support.');
+      console.error(`Failed to cache your token file. Please alert support. Error messages: ${err}`);
     }
     return newToken.token;
   } catch (e) {
